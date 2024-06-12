@@ -17,10 +17,10 @@
         <th>Калории</th>
     </tr>
     <c:forEach items="${mealsTo}" var="item">
-        <tr style="color:${item.getExcess() ? ' red':' green'}">
-            <td><c:out value="${dtf.format(item.getDateTime())}"/></td>
-            <td><c:out value="${item.getDescription()}"/></td>
-            <td><c:out value="${item.getCalories()}"/></td>
+        <tr style="color:${item.excess ? ' red':' green'}">
+            <td>${dateTimeFormatter.format(item.dateTime)}</td>
+            <td>${item.description}</td>
+            <td>${item.calories}</td>
         </tr>
     </c:forEach>
 </table>
