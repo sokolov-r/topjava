@@ -28,7 +28,18 @@ public class JpaMealRepository implements MealRepository {
             em.persist(meal);
             return meal;
         } else {
-            return em.merge(meal);
+            if (em.createNamedQuery(Meal.UPDATE)
+                    .setParameter("description", meal.getDescription())
+                    .setParameter("calories", meal.getCalories())
+                    .setParameter("description", meal.getDescription())
+                    .setParameter("dateTime", meal.getDateTime())
+                    .setParameter("id", meal.getId())
+                    .setParameter("userId", userId)
+                    .executeUpdate() != 0) {
+                return meal;
+            } else {
+                return null;
+            }
         }
     }
 
