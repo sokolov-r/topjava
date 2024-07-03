@@ -10,7 +10,10 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
+
+import static java.time.LocalDateTime.of;
 
 @Repository
 @Transactional(readOnly = true)
@@ -24,22 +27,15 @@ public class JpaMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         User ref = em.getReference(User.class, userId);
         meal.setUser(ref);
-        if (meal.isNew()) {
-            em.persist(meal);
-            return meal;
-        } else {
-            if (em.createNamedQuery(Meal.UPDATE)
-                    .setParameter("description", meal.getDescription())
-                    .setParameter("calories", meal.getCalories())
-                    .setParameter("description", meal.getDescription())
-                    .setParameter("dateTime", meal.getDateTime())
-                    .setParameter("id", meal.getId())
-                    .setParameter("userId", userId)
-                    .executeUpdate() != 0) {
+        if (meal.getUser().getId() == userId) {
+            if (meal.isNew()) {
+                em.persist(meal);
                 return meal;
             } else {
-                return null;
+                return em.merge(meal);
             }
+        } else {
+            return null;
         }
     }
 
