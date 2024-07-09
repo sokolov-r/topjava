@@ -21,10 +21,15 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     Meal findByIdAndUserId(int id, int userId);
 
-    List<Meal> findByUserIdOrderByDateTimeDateTimeDesc(int userId);
+    List<Meal> findByUserIdOrderByDateTimeDesc(int userId);
 
     @Transactional
     @Modifying
     @Query("SELECT m FROM Meal m WHERE m.user.id= ?3  AND m.dateTime >=  ?1 AND m.dateTime < ?2 ORDER BY m.dateTime DESC")
     List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Meal m SET m.description = ?1, m.calories = ?2, m.dateTime = ?3 WHERE m.id = ?4 AND m.user.id = ?5")
+    void update(String description, int calories, LocalDateTime dateTime, int id, int userId);
 }
